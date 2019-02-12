@@ -1,0 +1,16 @@
+<define tag="pricing-tier">
+	<header>
+		<h1>$<slot name="price"></slot></h1>
+		<h2><slot name="name"></slot></h2>
+	</header>
+	<div class="features">
+		<slot name="features"></slot>
+	</div>
+</define>
+
+<pricing-tier slot-name="Basic">
+	<slot name="price">10</slot>
+	<ul slot="features">
+		<li>Unlimited foo</li>
+	</ul>
+</pricing-tier>

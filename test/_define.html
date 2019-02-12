@@ -1,0 +1,11 @@
+<define tag="pricing-tier">
+	<header>
+		<h1>$<slot name="price">0</slot></h1>
+		<h2><slot name="name" /></h2>
+	</header>
+	<div class="features">
+		<slot name="features" />
+	</div>
+</define>
+
+<define tag="x-image"><img src="images/${slot-src}"></define>
