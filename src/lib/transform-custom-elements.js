@@ -1,40 +1,41 @@
 import { Element, Fragment, Text } from 'phtml';
 import transformAttrValues from './transform-attr-values';
 
-export default function transformCustomElements(root, preserve, defines) {
+export default function transformCustomElements (root, opts, defines) {
 	root.walk(node => {
-		const isCustomTag = node.type === 'element' && node.name in defines;
+		const isValidCustomElement = node.type === 'element' && node.name in defines;
 
-		if (!isCustomTag) {
+		// ignore non-custom-elements and unknown custom elements
+		if (!isValidCustomElement) {
 			return;
 		}
 
-		const clone = defines[node.name].clone(null, true);
-		const slots1 = getSlotsFromDefineElement(clone);
-		const slots2 = getSlotFromCustomElement(node);
+		const defineClone = defines[node.name].clone(null, true);
+		const defineSlots = getSlotsFromDefineElement(defineClone);
+		const customSlots = getSlotsFromCustomElement(node);
 
-		for (const name in slots1) {
-			if (name in slots2) {
-				slots1[name].replaceWith(slots2[name]);
+		for (const name in defineSlots) {
+			if (name in customSlots) {
+				defineSlots[name].replaceWith(customSlots[name]);
 			} else {
-				slots1[name].replaceWith(...slots1[name].nodes);
+				defineSlots[name].replaceWith(...defineSlots[name].nodes);
 			}
 		}
 
-		clone.walk(child => {
+		defineClone.walk(child => {
 			if (child.type !== 'element') {
 				return;
 			}
 
-			transformAttrValues(child.attrs, slots2);
+			transformAttrValues(child.attrs, customSlots);
 		});
 
-		if (preserve) {
+		if (opts.preserve) {
 			const template = new Element({ name: 'template', nodes: node.nodes });
 
-			node.nodes.push(template, ...clone.nodes);
+			node.nodes.push(template, ...defineClone.nodes);
 		} else {
-			node.replaceWith(...clone.nodes);
+			node.replaceWith(...defineClone.nodes);
 		}
 	});
 }
@@ -58,7 +59,7 @@ const getSlotsFromDefineElement = node => {
 	return slots;
 };
 
-const getSlotFromCustomElement = node => {
+const getSlotsFromCustomElement = node => {
 	const slots = {};
 
 	node.attrs.forEach(attr => {
@@ -80,6 +81,7 @@ const getSlotFromCustomElement = node => {
 			return;
 		}
 
+		// transform <slot name>
 		const slotElementName = child.name === 'slot' && child.attrs.get('name');
 
 		if (slotElementName) {
@@ -92,14 +94,15 @@ const getSlotFromCustomElement = node => {
 			return;
 		}
 
-		const elementName = child.type === 'element' && child.attrs.get('slot');
+		// transform <x slot>
+		const elementSlotName = child.attrs.get('slot');
 
-		if (elementName) {
+		if (elementSlotName) {
 			const slotElement = child.clone(null, true);
 
 			slotElement.attrs.remove('slot');
 
-			slots[elementName] = slotElement;
+			slots[elementSlotName] = slotElement;
 
 			return;
 		}

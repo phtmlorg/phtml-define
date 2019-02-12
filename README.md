@@ -7,7 +7,7 @@
 [pHTML Define] lets you use custom defined elements in HTML.
 
 ```html
-<!-- _define.html -->
+<!-- definitions.html -->
 
 <define tag="pricing-tier">
   <header>
@@ -21,7 +21,7 @@
 
 <!-- index.html -->
 
-<link rel="html" href="_define.html" />
+<link rel="html" href="definitions.html" />
 <pricing-tier slot-name="Basic">
   <slot name="price">10</slot>
   <ul slot="features">
@@ -40,6 +40,52 @@
     <li>Unlimited foo</li>
   </ul>
 </div>
+```
+
+Definition elements (`<define>`) can exist on the same page they are being
+referenced. Definition imports (`<link rel="html" href>`) can reference real URLs.
+
+### Slots
+
+Slots are dynamically replaced elements and attribute values.
+
+Within `<define>` elements, slots can referenced as elements or attribute
+values. A `<slot>` element identifies its replacement with a `name` attribute —
+e.g `<slot name="some-id" />` — while a slot attribute value identifies its
+replacement with a dollar sign (`$`), wrapping curly braces (`{}`), and a
+`slot` prefix — e.g. `${slot-some-id}`.
+
+```html
+<!-- a slot element referencing "price" -->
+<slot name="price" />
+
+<!-- a slot element referencing "price" with a fallback value of "0" -->
+<slot name="price">0</slot>
+```
+
+```html
+<!-- a slot attribute value referencing "src" -->
+<img src="images/${slot-src}">
+
+<!-- a slot attribute value referencing "src" with a fallback value of "default.jpg" -->
+<img src="images/${slot-src,default.jpg}">
+```
+
+Within custom elements, slots are populated by element or attribute.
+
+```html
+<!-- populate a slot named "src" with image.jpg -->
+<x-image slot-src="image.jpg" />
+```
+
+```html
+<!-- populate a slot named "src" with image.jpg -->
+<slot name="src">image.jpg</slot>
+```
+
+```html
+<!-- populate a slot named "features" with <p>I will run</p> -->
+<p slot="features">I will run</p>
 ```
 
 ## Usage
@@ -88,7 +134,7 @@ phtmlInclude({ preserve: true });
 ```
 
 ```html
-<link rel="html" href="_define.html" />
+<link rel="html" href="definitions.html" />
 <pricing-tier slot-name="Basic">
   <slot name="price">10</slot>
   <ul slot="features">
@@ -98,7 +144,7 @@ phtmlInclude({ preserve: true });
 
 <!-- becomes -->
 
-<link rel="html" href="_define.html" />
+<link rel="html" href="definitions.html" />
 <pricing-tier slot-name="Basic">
   <template>
     <slot name="price">10</slot>

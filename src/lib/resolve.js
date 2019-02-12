@@ -1,5 +1,6 @@
 import { readFile, stat } from 'fs';
 import { join, sep } from 'path';
+import fetch from 'node-fetch';
 
 /* Resolve the location of a file within `url(id)` from `cwd`
 /* ========================================================================== */
@@ -11,7 +12,8 @@ export default function resolve (id, rawcwd, rawcache) {
 	const cwd = starts_with_root(id) ? '' : rawcwd;
 
 	// resolve as a file using `cwd/id` as `file`
-	return resolve_as_file(join(cwd, id), cache)
+	return resolve_as_fetch(id)
+	.catch(() => resolve_as_file(join(cwd, id), cache))
 	// otherwise, resolve as a directory using `cwd/id` as `dir`
 	.catch(() => resolve_as_directory(join(cwd, id), cache))
 	// otherwise, if `id` does not begin with `/`, `./`, or `../`
@@ -22,6 +24,15 @@ export default function resolve (id, rawcwd, rawcache) {
 	)
 	// otherwise, throw `"HTML not found"`
 	.catch(() => Promise.reject(new Error('HTML not found')));
+}
+
+function resolve_as_fetch (url) {
+	return starts_with_protocol(url)
+		? fetch(url).then(response => response.text()).then(contents => ({
+			file: url,
+			contents
+		}))
+	: Promise.reject();
 }
 
 function resolve_as_file (file, cache) {
@@ -119,6 +130,10 @@ function json_contents (dir, cache) {
 	return file_modified_contents(file, cache).then(
 		({ contents }) => JSON.parse(contents)
 	);
+}
+
+function starts_with_protocol (id) {
+	return /^(?:\w+:)?\/\/(\S+)$/.test(id);
 }
 
 function starts_with_root (id) {

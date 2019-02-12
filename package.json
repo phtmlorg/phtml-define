@@ -1,6 +1,6 @@
 {
   "name": "@phtml/define",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Use custom defined elements in HTML",
   "author": "Jonathan Neal <jonathantneal@hotmail.com>",
   "license": "CC0-1.0",
@@ -27,6 +27,7 @@
     "node": ">=6.0.0"
   },
   "dependencies": {
+    "node-fetch": "^2.3.0",
     "phtml": "^1.1.6"
   },
   "devDependencies": {

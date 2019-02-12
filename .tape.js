@@ -9,12 +9,15 @@ module.exports = {
 		}
 	},
 	'link': {
-		message: 'supports <link rel="html" href /> usage'
+		message: 'supports <link rel="html" href="some/path" /> usage'
+	},
+	'codepen': {
+		message: 'supports <link rel="html" href="https://some/url" /> usage'
 	},
 	'image': {
 		message: 'supports slots in attribute values'
 	},
-	'missing': {
+	'fallbacks': {
 		message: 'handles slot fallbacks'
 	}
 };

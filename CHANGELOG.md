@@ -1,5 +1,10 @@
 # Changes to pHTML Define
 
+### 1.2.0 (February 12, 2019)
+
+- Added: `<link rel="html" href>` can reference an external URL
+- Added: Slot attribute values can have fallbacks
+
 ### 1.1.0 (February 12, 2019)
 
 - Added: `preserve` option to preserve the original Custom Element
