@@ -76,6 +76,48 @@ phtml([
 
 ## Options
 
+### preserve
+
+The `preserve` option determines whether all custom element containers should remain. By default, custom element containers are not preserve. However when
+custom elements are preserved, their original children are moved into a
+`<template>` element.
+
+```js
+// preserve all custom elements
+phtmlInclude({ preserve: true });
+```
+
+```html
+<link rel="html" href="_define.html" />
+<pricing-tier slot-name="Basic">
+  <slot name="price">10</slot>
+  <ul slot="features">
+    <li>Unlimited foo</li>
+  </ul>
+</pricing-tier>
+
+<!-- becomes -->
+
+<link rel="html" href="_define.html" />
+<pricing-tier slot-name="Basic">
+  <template>
+    <slot name="price">10</slot>
+    <ul slot="features">
+      <li>Unlimited foo</li>
+    </ul>
+  </template>
+  <header>
+    <h1>$10</h1>
+    <h2>Basic</h2>
+  </header>
+  <div class="features">
+    <ul>
+      <li>Unlimited foo</li>
+    </ul>
+  </div>
+</pricing-tier>
+```
+
 ### cwd
 
 The `cwd` option defines and overrides the current working directory of

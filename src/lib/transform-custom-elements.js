@@ -1,7 +1,7 @@
-import { Fragment, Text } from 'phtml';
+import { Element, Fragment, Text } from 'phtml';
 import transformAttrValues from './transform-attr-values';
 
-export default function transformCustomElements(root, defines) {
+export default function transformCustomElements(root, preserve, defines) {
 	root.walk(node => {
 		const isCustomTag = node.type === 'element' && node.name in defines;
 
@@ -29,7 +29,13 @@ export default function transformCustomElements(root, defines) {
 			transformAttrValues(child.attrs, slots2);
 		});
 
-		node.replaceWith(...clone.nodes);
+		if (preserve) {
+			const template = new Element({ name: 'template', nodes: node.nodes });
+
+			node.nodes.push(template, ...clone.nodes);
+		} else {
+			node.replaceWith(...clone.nodes);
+		}
 	});
 }
 
