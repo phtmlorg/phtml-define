@@ -16,7 +16,7 @@ export default function getTags(root, overrideCWD, fileCache) {
 		}
 
 		// <link rel="html" href="x" />
-		const id = node.name === 'link' && node.attrs.get('href');
+		const id = node.name === 'link' && node.attrs.get('rel') === 'html' && node.attrs.get('href');
 
 		if (id) {
 			node.remove();
