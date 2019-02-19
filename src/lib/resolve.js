@@ -23,7 +23,7 @@ export default function resolve (id, rawcwd, rawcache) {
 		: Promise.reject()
 	)
 	// otherwise, throw `"HTML not found"`
-	.catch(() => Promise.reject(new Error('HTML not found')));
+	.catch(() => Promise.reject(new Error(`HTML not found ${id} in ${cwd}`)));
 }
 
 function resolve_as_fetch (url) {

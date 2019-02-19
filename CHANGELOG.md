@@ -1,5 +1,9 @@
 # Changes to pHTML Define
 
+### 2.0.0 (February 18, 2019)
+
+- Updated: `phtml` to 2.0.1 (major)
+
 ### 1.2.0 (February 12, 2019)
 
 - Added: `<link rel="html" href>` can reference an external URL

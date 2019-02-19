@@ -28,7 +28,7 @@ export default function getDefineElements (root, opts) {
 			}
 
 			// get the current working directory for the <link>
-			const cwd = opts.cwd || path.dirname(node.source.from);
+			const cwd = opts.cwd || path.dirname(node.source.input.from);
 
 			// promise the contents of the href from <link>
 			const resolved = resolve(href, cwd, opts.cache);
