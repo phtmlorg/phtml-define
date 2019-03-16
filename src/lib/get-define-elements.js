@@ -3,7 +3,7 @@ import path from 'path';
 import resolve from './resolve';
 import transform from './transform';
 
-			// conditionally remove <link rel="html" href /> if not preserving
+// conditionally remove <link rel="html" href /> if not preserving
 export default function getDefineElements (root, opts) {
 	const defines = {};
 
@@ -37,7 +37,7 @@ export default function getDefineElements (root, opts) {
 				() => resolved
 			).then(
 				// promise the contents of the href as an AST
-				result => new Result(result.contents, { from: result.file }).root
+				result => new Result(result.contents, { ...result, from: result.file }).root
 			).then(
 				// transform the <link> AST
 				linkroot => transform(linkroot, opts)

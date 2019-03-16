@@ -2,7 +2,7 @@ import { Element, Fragment, Text } from 'phtml';
 import transformAttrValues from './transform-attr-values';
 
 export default function transformCustomElements (root, opts, defines) {
-	root.walk(node => {
+	root.walk((node, result) => {
 		const isValidCustomElement = node.type === 'element' && node.name in defines;
 
 		// ignore non-custom-elements and unknown custom elements
@@ -31,7 +31,7 @@ export default function transformCustomElements (root, opts, defines) {
 		});
 
 		if (opts.preserve) {
-			const template = new Element({ name: 'template', nodes: node.nodes });
+			const template = new Element({ name: 'template', nodes: node.nodes, result });
 
 			node.nodes.push(template, ...defineClone.nodes);
 		} else {
@@ -71,7 +71,7 @@ const getSlotsFromCustomElement = node => {
 
 		const name = slotMatch[1];
 
-		slots[name] = new Text({ data: attr.value });
+		slots[name] = new Text({ data: attr.value, result: node.result });
 	});
 
 	node.walk(child => {
@@ -85,7 +85,7 @@ const getSlotsFromCustomElement = node => {
 		const slotElementName = child.name === 'slot' && child.attrs.get('name');
 
 		if (slotElementName) {
-			const slotElement = new Fragment();
+			const slotElement = new Fragment({ result: node.result });
 
 			slotElement.append(...child.clone(null, true).nodes);
 
