@@ -28,10 +28,14 @@ export default function resolve (id, rawcwd, rawcache) {
 
 function resolve_as_fetch (url) {
 	return starts_with_protocol(url)
-		? fetch(url).then(response => response.text()).then(contents => ({
-			file: url,
-			contents
-		}))
+		? fetch(url).then(
+			response => response.text()
+		).then(
+			contents => ({
+				file: url,
+				contents
+			})
+		)
 	: Promise.reject();
 }
 

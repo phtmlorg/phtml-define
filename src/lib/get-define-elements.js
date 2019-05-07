@@ -65,7 +65,9 @@ export default function getDefineElements (root, opts) {
 	});
 
 	// promise the defines
-	return promise.then(() => defines);
+	return promise.then(
+		() => defines
+	);
 }
 
 const isValidTagRegExp = /[_a-zA-Z]+[_a-zA-Z0-9-]*-[_a-zA-Z0-9-]+$/;

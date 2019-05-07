@@ -31,7 +31,11 @@ export default function transformCustomElements (root, opts, defines) {
 		});
 
 		if (opts.preserve) {
-			const template = new Element({ name: 'template', nodes: node.nodes, result });
+			const template = new Element({
+				name: 'template',
+				nodes: node.nodes,
+				result
+			});
 
 			node.nodes.push(template, ...defineClone.nodes);
 		} else {

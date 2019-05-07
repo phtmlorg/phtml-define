@@ -2,133 +2,103 @@
 
 [pHTML Define] runs in all Node environments, with special instructions for:
 
-| [Node](#node) | [pHTML CLI](#phtml-cli) | [Webpack](#webpack) | [Create React App](#create-react-app) | [Gulp](#gulp) | [Grunt](#grunt) |
-| --- | --- | --- | --- | --- | --- |
+| [Node](#node) | [CLI](#phtml-cli) | [Eleventy](#eleventy) | [Gulp](#gulp) | [Grunt](#grunt) |
+| --- | --- | --- | --- | --- |
 
 ## Node
 
 Add [pHTML Define] to your project:
 
 ```bash
-npm install @phtml/define --save-dev
+npm install @phtmlorg/define --save-dev
 ```
 
 Use [pHTML Define] to process your HTML:
 
 ```js
-const phtmlDefine = require('@phtml/define');
+const phtmlDefine = require('@phtmlorg/define')
 
-phtmlDefine.process(YOUR_HTML /*, processOptions, pluginOptions */);
+phtmlDefine.process(YOUR_HTML /*, processOptions, pluginOptions */)
 ```
 
 Or use it as a [pHTML] plugin:
 
 ```js
-const phtml = require('phtml');
-const phtmlDefine = require('@phtml/define');
+const phtml = require('phtml')
+const phtmlDefine = require('@phtmlorg/define')
 
 phtml([
   phtmlDefine(/* pluginOptions */)
-]).process(YOUR_HTML /*, processOptions */);
+]).process(YOUR_HTML /*, processOptions */)
 ```
 
-## pHTML CLI
+## CLI
 
-Add [pHTML CLI] to your project:
+Transform HTML files directly from the command line:
 
 ```bash
-npm install phtml-cli --save-dev
+npx phtml source.html output.html -p @phtmlorg/define
 ```
 
-Use [pHTML Define] in your `phtml.config.js` configuration file:
+Alternatively, add [pHTML Define] to your `phtml.config.js` configuration file:
 
 ```js
-const phtmlDefine = require('@phtml/define');
-
 module.exports = {
   plugins: [
-    phtmlDefine(/* pluginOptions */)
+    ['@phtmlorg/define', /* pluginOptions */]
   ]
 }
 ```
 
-## Webpack
+## Eleventy
 
-Add [pHTML Loader] to your project:
+Add [pHTML Eleventy] and [pHTML Define] to your Eleventy project:
 
-```bash
-npm install phtml-loader --save-dev
+```sh
+npm install @phtmlorg/define @phtml/11ty --save-dev
 ```
 
-Use [pHTML Define] in your Webpack configuration:
+Use [pHTML Eleventy] and [pHTML Define] in your Eleventy configuration:
 
 ```js
-const phtmlDefine = require('@phtml/define');
+const phtml11ty = require('@phtml/11ty')
+const phtmlDefine = require('@phtmlorg/define')
 
-module.exports = {
-  module: {
-    rules: [
-      {
-        test: /\.html$/,
-        use: [
-          'style-loader',
-          { loader: 'html-loader', options: { importLoaders: 1 } },
-          { loader: 'phtml-loader', options: {
-            ident: 'phtml',
-            plugins: () => [
-              phtmlDefine(/* pluginOptions */)
-            ]
-          } }
-        ]
-      }
+module.exports = function (eleventyConfig) {
+  eleventyConfig.addPlugin(phtml11ty, {
+    use: [
+      phtmlDefine(/* pluginOptions */)
     ]
-  }
+  })
 }
-```
-
-## Create React App
-
-Add [React App Rewired] and [React App Rewire pHTML] to your project:
-
-```bash
-npm install react-app-rewired react-app-rewire-html --save-dev
-```
-
-Use [React App Rewire pHTML] and [pHTML Define] in your
-`config-overrides.js` file:
-
-```js
-const reactAppRewirePHTML = require('react-app-rewire-phtml');
-const phtmlDefine = require('@phtml/define');
-
-module.exports = config => reactAppRewirePHTML(config, {
-  plugins: () => [
-    phtmlDefine(/* pluginOptions */)
-  ]
-});
 ```
 
 ## Gulp
 
-Add [Gulp pHTML] to your project:
+Add [Gulp pHTML] and [pHTML Define] to your project:
 
 ```bash
-npm install gulp-phtml --save-dev
+npm install @phtmlorg/define gulp-phtml --save-dev
 ```
 
-Use [pHTML Define] in your Gulpfile:
+Use [Gulp pHTML] and [pHTML Define] in your Gulpfile:
 
 ```js
-const phtml = require('gulp-phtml');
-const phtmlDefine = require('@phtml/define');
+const gulp = require('gulp')
+const gulpPhtml = require('gulp-phtml')
+const phtmlDefine = require('@phtmlorg/define')
 
-gulp.task('html', () => gulp.src('./src/*.html').pipe(
-  phtml([
-    phtmlDefine(/* pluginOptions */)
-  ])
-).pipe(
-  gulp.dest('.')
-));
+gulp.task('html',
+  () => gulp.src('./src/*.html').pipe(
+    gulpPhtml({
+      plugins: [
+        phtmlDefine(/* pluginOptions */)
+      ]
+    })
+  ).pipe(
+    gulp.dest('dist')
+  )
+)
 ```
 
 ## Grunt
@@ -139,32 +109,33 @@ Add [Grunt pHTML] to your project:
 npm install grunt-phtml --save-dev
 ```
 
-Use [pHTML Define] in your Gruntfile:
+Use [Grunt pHTML] and [pHTML Define] in your Gruntfile:
 
 ```js
-const phtmlDefine = require('@phtml/define');
+const phtmlDefine = require('@phtmlorg/define')
 
-grunt.loadNpmTasks('grunt-phtml');
+grunt.loadNpmTasks('grunt-phtml')
 
 grunt.initConfig({
   phtml: {
     options: {
-      use: [
-       phtmlDefine(/* pluginOptions */)
+      plugins: [
+        phtmlDefine(/* pluginOptions */)
       ]
     },
     dist: {
-      src: '*.html'
+      files: [{
+        expand: true,
+        src: 'src/*.html',
+        dest: 'dest'
+      }]
     }
   }
-});
+})
 ```
 
 [Gulp pHTML]: https://github.com/phtmlorg/gulp-phtml
 [Grunt pHTML]: https://github.com/phtmlorg/grunt-phtml
 [pHTML]: https://github.com/phtmlorg/phtml
-[pHTML CLI]: https://github.com/phtmlorg/phtml-cli
-[pHTML Loader]: https://github.com/phtmlorg/phtml-loader
+[pHTML Eleventy]: https://github.com/phtmlorg/phtml-11ty
 [pHTML Define]: https://github.com/phtmlorg/phtml-define
-[React App Rewire pHTML]: https://github.com/phtmlorg/react-app-rewire-phtml
-[React App Rewired]: https://github.com/timarney/react-app-rewired
