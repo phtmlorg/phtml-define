@@ -1,5 +1,10 @@
 # Changes to pHTML Define
 
+### 4.1.0 (May 16, 2019)
+
+- Updated: `node-fetch` to 2.6.0 (minor)
+- Updated: `phtml` to 4.1.0 (minor)
+
 ### 4.0.0 (May 6, 2019)
 
 - Updated: `phtml` to 4.0.0 (major)
