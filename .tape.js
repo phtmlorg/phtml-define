@@ -8,6 +8,19 @@ module.exports = {
 			preserve: true
 		}
 	},
+	'basic-nested': {
+		message: 'supports { transformSlots: true } usage',
+		options: {
+			transformSlots: true
+		}
+	},
+	'basic-nested:preserve': {
+		message: 'supports { transformSlots: true, preserve: true } usage',
+		options: {
+			transformSlots: true,
+			preserve: true
+		}
+	},
 	'link': {
 		message: 'supports <link rel="html" href="some/path" /> usage'
 	},
