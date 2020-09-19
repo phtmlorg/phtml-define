@@ -10,6 +10,11 @@ export default function transformCustomElements (root, opts, defines) {
 			return;
 		}
 
+		// leave template children unprocessed
+		if (isTemplateOrTemplateChild(node)) {
+			return;
+		}
+
 		const defineClone = defines[node.name].clone(null, true);
 		const defineSlots = getSlotsFromDefineElement(defineClone);
 		const customSlots = getSlotsFromCustomElement(node);
@@ -30,24 +35,75 @@ export default function transformCustomElements (root, opts, defines) {
 			transformAttrValues(child.attrs, customSlots);
 		});
 
-		const { parent } = node;
+		const newRoot = replaceNode(node, result, opts, defineClone);
 
-		if (opts.preserve) {
-			const template = new Element({
-				name: 'template',
-				nodes: node.nodes,
-				result
-			});
-
-			node.nodes.push(template, ...defineClone.nodes);
-		} else {
-			node.replaceWith(...defineClone.nodes);
-		}
-
-		if (opts.transformSlots) {
-			transformCustomElements(parent, opts, defines);
+		if (opts.transformSlots){
+			transformCustomElements(newRoot, opts, defines);
 		}
 	});
+}
+
+const replaceNode = (node, result, opts, define) => {
+    if (opts.preserve) {
+
+		const { nodes } = node;
+
+		// prevent creation of empty <template></template> nodes
+		if (!nodes.length) {
+			node.nodes.push(...define.nodes);
+
+			return node;
+		}
+
+		const hasTemplateSiblings = nodes.some(n => n.name === 'template');
+
+		/* If the template already exists then we just need to finish processing
+		 * the sibilings.
+		 *
+		 * This handles the scenario where there are 2 sibling slot elements and
+		 * are using { transformSlots: true }
+		 *
+		 * <custom-element slot="contents">
+		 *   <span slot="left">Left</span>
+		 *
+		 *   <span slot="right">Right</span>
+		 * </custom-element>
+		 */
+
+		if (hasTemplateSiblings) {
+			return node;
+		}
+
+		const template = new Element({
+			name: 'template',
+			nodes: node.nodes,
+			result
+		});
+
+		node.nodes.push(template, ...define.nodes);
+
+		return node;
+	} else {
+		const { parent } = node;
+
+		node.replaceWith(...define.nodes);
+
+		return parent;
+	}
+}
+
+const isTemplateOrTemplateChild = node => {
+	let current = node;
+
+	while(current) {
+		if (current.name === 'template') {
+			return true;
+		}
+
+		current = current.parent;
+	}
+
+	return false;
 }
 
 const getSlotsFromDefineElement = node => {
