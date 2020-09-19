@@ -1,0 +1,43 @@
+<define tag="page-layout">
+	<div class="container">
+		<slot name="contents" />
+	</div>
+</define>
+
+<define tag="two-column">
+	<div class="row">
+		<div class="col-6">
+			<slot name="left" />
+		</div>
+
+		<div class="col-6">
+			<slot name="right" />
+		</div>
+	</div>
+</define>
+
+<page-layout><template>
+	<two-column slot="contents">
+		<h1 slot="left">Left Column</h1>
+
+		<h1 slot="right">Right Column</h1>
+	</two-column>
+</template>
+	<div class="container">
+		<two-column><template>
+		<h1 slot="left">Left Column</h1>
+
+		<h1 slot="right">Right Column</h1>
+	</template>
+	<div class="row">
+		<div class="col-6">
+			<h1>Left Column</h1>
+		</div>
+
+		<div class="col-6">
+			<h1>Right Column</h1>
+		</div>
+	</div>
+</two-column>
+	</div>
+</page-layout>

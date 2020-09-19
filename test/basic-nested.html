@@ -1,0 +1,25 @@
+<define tag="page-layout">
+	<div class="container">
+		<slot name="contents" />
+	</div>
+</define>
+
+<define tag="two-column">
+	<div class="row">
+		<div class="col-6">
+			<slot name="left" />
+		</div>
+
+		<div class="col-6">
+			<slot name="right" />
+		</div>
+	</div>
+</define>
+
+<page-layout>
+	<two-column slot="contents">
+		<h1 slot="left">Left Column</h1>
+
+		<h1 slot="right">Right Column</h1>
+	</two-column>
+</page-layout>
