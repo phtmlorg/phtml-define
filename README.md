@@ -174,6 +174,62 @@ The `cwd` option defines and overrides the current working directory of
 phtmlInclude({ cwd: '/some/absolute/path' });
 ```
 
+### transformSlots
+
+Custom elements, that populate slots of a parent custom element, are not replaced with their defined custom element templates.
+
+`transformSlots` enables this nested replacement.
+
+```js
+phtmlInclude({ transformSlots: true });
+```
+
+```html
+<!-- definitions.html -->
+
+<define tag="pricing-tier">
+  <header>
+    <h1>$<slot name="price" /></h1>
+    <h2><slot name="name" /></h2>
+  </header>
+  <div class="features">
+    <slot name="features" />
+  </div>
+</define>
+
+<define tag="call-to-action">
+  <button class="call-to-action">
+    <slot name="text">Click Me</slot>
+  </button>
+</define>
+
+<!-- index.html -->
+
+<link rel="html" href="definitions.html" />
+<pricing-tier slot-name="Basic">
+  <slot name="price">10</slot>
+  <div slot="features">
+    <ul>
+      <li>Unlimited foo</li>
+    </ul>
+    <call-to-action slot-text="Buy now"></call-to-action>
+  </div>
+</pricing-tier>
+
+<!-- becomes -->
+
+<header>
+  <h1>$10</h1>
+  <h2>Basic</h2>
+</header>
+<div class="features">
+  <ul>
+    <li>Unlimited foo</li>
+  </ul>
+  <button class="call-to-action">Buy now</button>
+</div>
+```
+
 [cli-img]: https://img.shields.io/travis/phtmlorg/phtml-define.svg
 [cli-url]: https://travis-ci.org/phtmlorg/phtml-define
 [git-img]: https://img.shields.io/badge/support-chat-blue.svg

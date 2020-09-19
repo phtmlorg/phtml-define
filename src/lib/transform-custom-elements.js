@@ -30,6 +30,8 @@ export default function transformCustomElements (root, opts, defines) {
 			transformAttrValues(child.attrs, customSlots);
 		});
 
+		const { parent } = node;
+
 		if (opts.preserve) {
 			const template = new Element({
 				name: 'template',
@@ -40,6 +42,10 @@ export default function transformCustomElements (root, opts, defines) {
 			node.nodes.push(template, ...defineClone.nodes);
 		} else {
 			node.replaceWith(...defineClone.nodes);
+		}
+
+		if (opts.transformSlots) {
+			transformCustomElements(parent, opts, defines);
 		}
 	});
 }
